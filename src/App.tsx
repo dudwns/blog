@@ -20,7 +20,7 @@ function App() {
 
   return (
     <Layout className="layout">
-      <h3>현재 시각: {time.toLocaleTimeString()}</h3>
+      <h3>현재 시각 : {time.toLocaleTimeString()}</h3>
       <Router>
         <Header>
           <Menu
