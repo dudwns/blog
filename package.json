@@ -49,5 +49,6 @@
     "eslint-plugin-react": "^7.31.10",
     "gh-pages": "^4.0.0",
     "prettier": "2.7.1"
-  }
+  },
+  "homepage": "http://dudwns.github.io/blog"
 }
