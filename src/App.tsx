@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import { Layout, Menu } from "antd";
-
+import { Button, Layout, Menu } from "antd";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 const { Header } = Layout;
 
+
+
 function App() {
-  const [time, setTime] = useState(new Date());
+
+  const login = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      const {code} = codeResponse;
+      console.log(codeResponse);
+      await axios.post("http://localhost:5000/auth/google",{
+        code,
+      })
+    },
+    flow: "auth-code",
+  });
+
+  const [time, setTime] = useState<Date>(new Date());
 
   const timer = setInterval(() => {
     setTime(new Date());
@@ -21,6 +36,17 @@ function App() {
   return (
     <Layout className="layout">
       <h3>현재 시각 : {time.toLocaleTimeString()}</h3>
+      <Button onClick={() => {
+        login();
+      }}>로그인</Button>
+      <GoogleLogin
+        onSuccess={(credentialResponse) => {
+          console.log(credentialResponse);
+        }}
+        onError={() => {
+          console.log("Login Failed");
+        }}
+        />
       <Router>
         <Header>
           <Menu
@@ -43,12 +69,14 @@ function App() {
             ]}
           />
         </Header>
-        <Layout.Content style={{ padding: "0 50px" }}>
-          <Routes>
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/resume" element={<Resume />} />
-            <Route path="/" element={<Home />} />
-          </Routes>
+        <Layout.Content style={{ padding: "0 50px", height: 300 }}>
+          <div className="site-layout-content">
+            <Routes>
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/resume" element={<Resume />} />
+              <Route path="/" element={<Home />} />
+            </Routes>
+          </div>
         </Layout.Content>
       </Router>
     </Layout>
@@ -56,7 +84,18 @@ function App() {
 }
 
 const Home = () => {
-  return <>홈페이지</>;
+  return (
+    <div
+      style={{
+        background: "#fff",
+        height: 200,
+        padding: 24,
+        margin: 60
+      }}
+    >
+      홈페이지
+    </div>
+  );
 };
 
 const Resume = () => {
